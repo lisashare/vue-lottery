@@ -1,0 +1,198 @@
+img {
+    width: 100%;
+}
+  
+.fixed_back {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100;
+}
+.lottery-alert{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 101;
+}
+.lottery-wrapper{
+    box-sizing: border-box;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 7.5rem;
+    height: 8.61rem;
+    background: url('../images/award_yet.png') no-repeat center;
+    background-size: 100%;
+    text-align: center;
+
+    padding-top: 3rem;
+    img{
+        width: 4.28rem;
+        height: 1.67rem;
+    }
+    .img-small{
+        width: 1.22rem;
+        height: 1.22rem;
+    }
+    h2{
+        margin:.4rem 0;
+        padding: 0 2.4rem;
+        height: 0.8rem;
+        font-size: .26rem;
+        font-weight: 500;
+        color:#4E4E4E;
+        text-align: center;
+    }
+    .modal-close-prize{
+        bottom: -.08rem;
+    }
+}
+.lottery-wrapper-no{
+    background: url('../images/award_no.png') no-repeat center;
+    background-size: 100%;
+    padding-top: 3.3rem;
+    img{
+        width: 1.22rem;
+        height: 1.22rem;
+    }
+}
+.btn-save{
+    display:inline-block;
+    width:2.42rem;
+    height:.6rem;
+    line-height:.6rem;
+    font-size: .26rem;
+    color: #fff;
+    text-align: center;
+    background:#FF473A;
+    border-radius:.3rem;
+}
+.prize-wrapper{
+    box-sizing: border-box;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 6.16rem;
+    height: 6.66rem;
+    padding-top: .26rem;
+    background: #fff;
+    border-radius:0.15rem; 
+    .prize-content{
+        box-sizing: border-box;
+        position: relative;
+        width: 5.64rem;
+        height: 5.64rem;
+        margin: 0 auto;
+        padding: 0.06rem;
+        background: url('../images/prize_bg@2x.png') no-repeat center; 
+    }
+    .prize-btn{
+        position: absolute;
+        top: 1.91rem;
+        left: 1.91rem;
+        width: 1.82rem;
+        height: 1.82rem;
+        text-align: center;
+        overflow: hidden;
+        background: url('../images/btn_start@2x.png') no-repeat center;
+        background-size: 1.54rem;
+        background-color: #96A7B9;
+        z-index: 10000;
+    }
+    ul{
+        position: relative;
+        width: 5.52rem;
+        height: 5.52rem;
+        .on{
+            background:#FDF299;
+        }
+        li{
+            position: absolute;
+            width: 1.82rem;
+            height: 1.82rem;
+            background: #E9E3CB;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            .prize-img-box{
+                width: 1.18rem;
+                height: 1.18rem;
+            }
+            p{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 1.6rem;
+                margin-top: .05rem;
+                height: .44rem;
+                line-height: .22rem;
+                font-size: 12px;
+                color: #4E4E4E;
+                text-align: center;
+            }
+        }
+        li:nth-child(1){
+            top: 0;
+            left: 0;
+        }
+        li:nth-child(2){
+            top: 0;
+            left: 1.85rem;
+        }   
+        li:nth-child(3){
+            top: 0;
+            right: 0;
+        }
+        li:nth-child(4){
+            top: 1.85rem;
+            right:0;
+        }
+        li:nth-child(5){
+            top: 3.7rem;
+            right: 0;
+        }
+        li:nth-child(6){
+            top: 3.7rem;
+            left: 1.85rem;
+        }
+        li:nth-child(7){
+            top: 3.7rem;
+            left: 0;
+        }
+        li:nth-child(8){
+            top: 1.85rem;
+        }
+    }
+    .prize-times{
+        margin-top: .1rem;
+        font-size: .28rem;
+        color: #4E4E4E;
+        text-align: center;
+        span{
+            margin: 0 .05rem;
+            line-height: .54rem;
+            font-size: .5rem;
+            color: #8A2126;
+        }
+    }
+}
+.modal-close-prize{
+    position: absolute;
+    left: 50%;
+    bottom: -1rem;
+    display: inline-block;
+    width: .6rem;
+    height: .6rem;
+    margin-left: -0.3rem;
+    background: url('../images/icon_close@2x.png') no-repeat center center;
+    background-size: 99%;
+}

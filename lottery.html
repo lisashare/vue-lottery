@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="full-screen" content="no">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="x5-fullscreen" content="false">
+    <meta name="viewport"
+          content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width,viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="format-detection" content="telephone=no">
+    <title>VUE实现九宫格抽奖</title>
+    <script src="./js/rem.js"></script>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/lottery.css">
+</head>
+
+<body>
+<div id="wrapper" class="wrapper" style="display: none;">
+    <div class="fixed_back" v-if="!layerShowLottery" @touchmove.prevent>
+        <div class="prize-wrapper">
+            <div class="prize-content">
+                <div class="prize-btn" @click="startLottery" v-if="isStart===1"></div>
+                <ul>      
+                    <li v-for="(item,i) in list" :class="i==index?'on':''" :key="i"> 
+                        <div class="prize-img-box">
+                            <img :src="item.img" alt="">
+                        </div>
+                        <p>{{item.title}}</p>
+                    </li>
+                </ul>
+            </div>
+            <p class="prize-times">抽奖机会剩余<span>{{award.chance}}</span>次</p>
+            <div class="modal-close-prize" @click="layerShowLottery = false"></div>
+        </div>
+    </div>
+    <div class="lottery-alert" v-if="showToast">
+        <div :class="['lottery-wrapper',prize_msg.id==0? 'lottery-wrapper-no': '' ]">
+            <p><img :class="[prize_msg.id==10000 ? 'img-small': '']" :src="prize_msg.prize_img" alt=""></p>
+            <h2>{{prize_msg.coupon_title}}</h2>
+            <div class="btn-save" @click="showToast=false" v-if="prize_msg.id == 0 || prize_msg.id == 10000">确定</div> 
+            <div class="btn-save" @click="showToast=false" v-else>立即领取</div> 
+            <!-- <div class="modal-close-prize" @click="showToast = false"></div> -->
+        </div>
+    </div>  
+</div>
+</body>
+<script src="./js/vue.min.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/qs.min.js"></script>
+<script src="./js/jquery-1.10.1.min.js"></script>
+<script>
+    var mainVM = new Vue({
+        el: '#wrapper',
+        data: {
+            layerShowLottery: false,
+            award:{
+                chance: 1,
+            },
+            prize_msg:{
+
+            },
+            res: [
+                {  
+                    id: 1,
+                    chance: 1,
+                    coupon_title: "爱奇艺VIP视频会员月卡~",
+                    prize_img: "./images/prize_card_aiqiyi.jpg"
+                },
+                {  
+                    id: 2,
+                    chance: 1,
+                    coupon_title: "华为Mate 30 Pro手机",
+                    prize_img: "./images/prize_card_phone.jpg"
+                },
+                {  
+                    id: 3,
+                    chance: 1,
+                    coupon_title: "100元京东E卡",
+                    prize_img: "./images/prize_card_100.jpg"
+                },
+                {  
+                    id: 4,
+                    chance: 1,
+                    coupon_title: "瘦脸仪",
+                    prize_img: "./images/prize_card_bang.jpg"
+                },
+                {  
+                    id: 5,
+                    chance: 1,
+                    coupon_title: "50元京东E卡",
+                    prize_img: "./images/prize_card_50.jpg"
+                },
+                {  
+                    id: 6,
+                    chance: 1,
+                    coupon_title: "腾讯VIP视频会员月卡~",
+                    prize_img: "./images/prize_card_tengxun.jpg"
+                },
+                {  
+                    id: 0,
+                    chance: 1,
+                    coupon_title:"很遗憾，请再接再厉~",
+                    id:"0",
+                    prize_img:"./images/img_regret.png"
+                },
+                {  
+                    id: 10000,
+                    chance: 1,
+                    coupon_title: "再来一次~",
+                    prize_img: "./images/prize_card_again.jpg"
+                },
+               
+            ],
+            isStart: 1,
+            score: 10, // 如果有积分，消耗积分
+            list: [ //奖品1-8   
+                {
+                    id: 1,
+                    img: "./images/prize_aiqiyi.png",
+                    title: "爱奇艺VIP视频会员月卡"
+                },
+                {
+                    id: 2,
+                    img: "./images/prize_phone.png",
+                    title: "华为Mate 30 Pro手机"
+                },
+                {
+                    id: 3,
+                    img: "./images/prize_100.png",
+                    title: "100元京东E卡"
+                },
+                {
+                    id: 4,
+                    img: "./images/prize_bang.png",
+                    title: "瘦脸仪"
+                },
+                {
+                    id: 5,
+                    img: "./images/prize_phone.png",
+                    title: "华为Mate 30 Pro手机"
+                },
+                {
+                    id: 6,
+                    img: "./images/prize_tengxun.png",
+                    title: "腾讯VIP视频会员月卡"
+                },
+                {
+                    id: 0,
+                    img: "./images/prize_100.png",
+                    title: "继续加油"
+                },
+                {
+                    id: 10000,
+                    img: "./images/prize_again.png",
+                    title: "再来一次"
+                }
+            ],
+            index: -1,  // 当前转动到哪个位置，起点位置
+            count: 8,  // 总共有多少个位置
+            timer: 0,  // 每次转动定时器
+            speed: 200,  // 初始转动速度s
+            times: 0,    // 转动次数
+            cycle: 50,   // 转动基本次数：即至少需要转动多少次再进入抽奖环节
+            prize: -1,   // 中奖位置
+            click: true,
+            showToast: false, //显示中奖弹窗
+        },
+        methods: {
+            initLottery() { // 获取九宫格奖品数据
+                var that = this;
+                setTimeout(function(){
+                    // 这里可以请求奖品数据和次数
+                    // that.list = res.result;
+                    // that.award.times = res.chance;
+                }, 800)
+            },
+            startLottery() {
+                if (!this.click) {
+                    return
+                }
+                this.click = false;
+                var that = this;
+                setTimeout(function(){
+                    const prize_index = parseInt(Math.random() * 8, 0) || 0;
+                    var res = that.res[prize_index];
+                    that.startRoll();
+                    var id = res.id;
+                    for(var i=0;i<that.list.length;i++){
+                        if(id == that.list[i].id){
+                            that.prize = i; 
+                            that.prize_msg = res;  
+                        }
+                    }
+                    this.click = true;
+                }, 800)
+            },
+            startRoll() {
+                this.times += 1; // 转动次数
+                this.oneRoll(); // 转动过程调用的每一次转动方法，这里是第一次调用初始化 
+			    // 如果当前转动次数达到要求 && 目前转到的位置是中奖位置
+                if (this.times > this.cycle + 10 && this.prize === this.index) {
+                    clearTimeout(this.timer) // 清除转动定时器，停止转动
+                    this.prize = -1 
+                    this.times = 0 
+                    this.speed = 200;
+                    this.click = true;
+                    var that = this;
+                    this.award.times = this.prize_msg.chance;
+                    setTimeout(res => {
+                        that.showToast = true; //显示中奖弹窗
+                    },500)
+                } else {
+                    if (this.times <= this.cycle) {
+                        this.speed -= 10 // 加快转动速度
+                    // } else if (this.times === this.cycle) { // 随机获得一个中奖位置
+                    //     const index = parseInt(Math.random() * 10, 0) || 0;
+                    //     this.prize = index; // 中奖位置,可由后台返回 
+                    //     if (this.prize > 7) {
+                    //         this.prize = 7
+                    // }
+                    } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.index === 7) || this.prize === this.index + 1)) {
+                        this.speed += 110 // 慢了
+                    } else {
+                        this.speed += 20  // 60>num 不满足后面情况
+                    }
+                    if (this.speed < 40) { // 控制过快的速度
+                        this.speed = 40
+                    }
+                    this.timer = setTimeout(this.startRoll, this.speed)
+                }
+            },
+            oneRoll() { // 每一次转动
+                let index = this.index    // 当前转动到哪个位置/起点位置
+                const count = this.count  // 总共有多少个位置
+                index += 1
+                if (index > count - 1) {
+                    index = 0
+                }
+                this.index = index
+            },
+        },
+        mounted() {
+            document.getElementById('wrapper').style.display = 'block';
+            this.initLottery();
+        },
+    })
+    /* toastTip 提示 
+       $("#toastTip").showMessage('网络错误，请稍后重试',1400);
+    */
+    $.fn.extend({
+        showMessage: function( $msg, $time ){
+            var oDiv = document.createElement("div");
+            oDiv.setAttribute("id", "toastTip");
+            var oBody = document.getElementsByClassName('wrapper')[0];
+            oBody.append(oDiv);
+            $('#toastTip').text( $msg );
+            $('#toastTip').fadeIn();
+            setTimeout(function() {
+                $('#toastTip').fadeOut();
+                $('#toastTip').remove();
+            }, $time);
+        }
+  });
+</script>
+</html>
