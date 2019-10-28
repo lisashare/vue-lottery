@@ -1,7 +1,7 @@
 ## VUE实现九宫格抽奖
 > 移动端抽奖小游戏-九宫格抽奖
 
-![Lottery](./images/demo.png)
+![Lottery](https://github.com/lisashare/vue-lottery/blob/master/images/demo.png)
 
 ### 项目结构
 
